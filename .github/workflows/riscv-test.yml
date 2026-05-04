@@ -48,7 +48,8 @@ jobs:
             python3-tomli libmpc-dev libmpfr-dev libgmp-dev gawk \
             build-essential bison flex texinfo gperf libtool patchutils bc \
             zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev \
-            libslirp-dev libncurses-dev dejagnu expect ccache
+            libslirp-dev libncurses-dev dejagnu expect ccache \
+            python3-pyelftools
 
       - name: Configure ccache
         run: |
