@@ -1,0 +1,240 @@
+name: RISC-V GCC test
+
+on:
+  pull_request:
+    branches: [trunk, master]
+  push:
+    branches: [trunk, master]
+  workflow_dispatch:
+    inputs:
+      arch:
+        description: "RISC-V arch (e.g. rv64gc)"
+        default: "rv64gc"
+      abi:
+        description: "RISC-V ABI (e.g. lp64d)"
+        default: "lp64d"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: riscv-test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RISCV: ${{ github.workspace }}/install
+  TARGET_ARCH: ${{ github.event.inputs.arch || 'rv64gc' }}
+  TARGET_ABI: ${{ github.event.inputs.abi || 'lp64d' }}
+
+jobs:
+  build-and-test:
+    name: Build RISC-V newlib toolchain and run GCC tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+
+    steps:
+      - name: Checkout GCC
+        uses: actions/checkout@v4
+        with:
+          path: gcc
+          fetch-depth: 1
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            autoconf automake autotools-dev curl python3 python3-pip \
+            python3-tomli libmpc-dev libmpfr-dev libgmp-dev gawk \
+            build-essential bison flex texinfo gperf libtool patchutils bc \
+            zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev \
+            libslirp-dev libncurses-dev dejagnu expect ccache
+
+      - name: Configure ccache
+        run: |
+          ccache --max-size=5G
+          ccache --set-config=compression=true
+          echo "PATH=/usr/lib/ccache:$PATH" >> "$GITHUB_ENV"
+
+      - name: Cache ccache directory
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ccache
+          key: ccache-riscv-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            ccache-riscv-${{ runner.os }}-
+
+      - name: Checkout riscv-gnu-toolchain
+        uses: actions/checkout@v4
+        with:
+          repository: riscv-collab/riscv-gnu-toolchain
+          path: riscv-gnu-toolchain
+          fetch-depth: 1
+
+      - name: Initialize required submodules
+        working-directory: riscv-gnu-toolchain
+        run: |
+          # Only fetch submodules required for a newlib (--disable-linux) build:
+          # binutils, newlib, dejagnu. GCC sources come from the PR checkout
+          # via --with-gcc-src, so we don't initialize the gcc submodule.
+          git submodule update --init --depth 1 --recursive binutils
+          git submodule update --init --depth 1 --recursive newlib
+          git submodule update --init --depth 1 --recursive dejagnu
+
+      - name: Configure riscv-gnu-toolchain
+        working-directory: riscv-gnu-toolchain
+        run: |
+          ./configure \
+            --prefix="$RISCV" \
+            --with-arch="$TARGET_ARCH" \
+            --with-abi="$TARGET_ABI" \
+            --with-gcc-src="$GITHUB_WORKSPACE/gcc" \
+            --disable-linux \
+            --disable-gdb \
+            --disable-multilib
+
+      - name: Build newlib toolchain
+        working-directory: riscv-gnu-toolchain
+        run: |
+          make -j"$(nproc)" newlib
+          echo "$RISCV/bin" >> "$GITHUB_PATH"
+
+      - name: ccache stats
+        if: always()
+        run: ccache -s || true
+
+      - name: Run GCC testsuite (newlib)
+        working-directory: riscv-gnu-toolchain
+        run: |
+          # Don't fail the job on individual testsuite FAILs; we report them.
+          make -j"$(nproc)" check-gcc-newlib || true
+
+      - name: Collect test results
+        id: collect
+        run: |
+          set -e
+          mkdir -p test-results
+          # Locate gcc/g++ .sum files produced by the build.
+          find riscv-gnu-toolchain/build-gcc-newlib-stage2 -name '*.sum' \
+            -exec cp -v {} test-results/ \; || true
+
+          # Aggregate pass/fail counters from the .sum files.
+          summary=test-results/summary.txt
+          : > "$summary"
+          for f in test-results/*.sum; do
+            [ -f "$f" ] || continue
+            echo "=== $(basename "$f") ===" >> "$summary"
+            grep -E '^# of ' "$f" >> "$summary" || true
+            echo "" >> "$summary"
+          done
+
+          # Extract unexpected failures (FAIL, XPASS, UNRESOLVED, ERROR).
+          fails=test-results/unexpected.txt
+          : > "$fails"
+          for f in test-results/*.sum; do
+            [ -f "$f" ] || continue
+            awk -v file="$(basename "$f")" '
+              /^FAIL: / || /^XPASS: / || /^UNRESOLVED: / || /^ERROR: / {
+                print file ": " $0
+              }' "$f" >> "$fails"
+          done
+
+          fail_count=$(wc -l < "$fails" | tr -d ' ')
+          echo "fail_count=$fail_count" >> "$GITHUB_OUTPUT"
+          echo "Unexpected results: $fail_count"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gcc-testsuite-results-${{ env.TARGET_ARCH }}-${{ env.TARGET_ABI }}
+          path: test-results/
+          if-no-files-found: warn
+
+      - name: Post test summary to PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        env:
+          FAIL_COUNT: ${{ steps.collect.outputs.fail_count }}
+        with:
+          script: |
+            const fs = require('fs');
+            const failCount = parseInt(process.env.FAIL_COUNT || '0', 10);
+            const arch = '${{ env.TARGET_ARCH }}';
+            const abi = '${{ env.TARGET_ABI }}';
+
+            let summary = '';
+            try {
+              summary = fs.readFileSync('test-results/summary.txt', 'utf8');
+            } catch (e) {
+              summary = '(no summary produced; build may have failed)';
+            }
+
+            let unexpected = '';
+            try {
+              unexpected = fs.readFileSync('test-results/unexpected.txt', 'utf8');
+            } catch (e) {
+              unexpected = '';
+            }
+
+            const MAX = 60000;
+            if (unexpected.length > MAX) {
+              unexpected = unexpected.slice(0, MAX) +
+                `\n... (truncated, full list in artifact)`;
+            }
+
+            const marker = '<!-- riscv-gcc-test-report -->';
+            const header = failCount === 0
+              ? `✅ RISC-V GCC test (\`${arch}/${abi}\`): no unexpected failures.`
+              : `⚠️ RISC-V GCC test (\`${arch}/${abi}\`): ${failCount} unexpected result(s).`;
+
+            const body = [
+              marker,
+              `## ${header}`,
+              '',
+              '<details><summary>Test summary (.sum totals)</summary>',
+              '',
+              '```',
+              summary.trim() || '(empty)',
+              '```',
+              '</details>',
+              '',
+              unexpected.trim() ? [
+                '<details><summary>Unexpected results</summary>',
+                '',
+                '```',
+                unexpected.trim(),
+                '```',
+                '</details>',
+              ].join('\n') : '',
+              '',
+              `Full \`.sum\` files are attached as the workflow artifact ` +
+              `\`gcc-testsuite-results-${arch}-${abi}\`.`,
+            ].join('\n');
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              { owner, repo, issue_number, per_page: 100 }
+            );
+            const existing = comments.find(c =>
+              c.user && c.user.type === 'Bot' && c.body && c.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: existing.id, body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number, body
+              });
+            }
+
+      - name: Fail job on unexpected results
+        if: steps.collect.outputs.fail_count != '0'
+        run: |
+          echo "Unexpected test results: ${{ steps.collect.outputs.fail_count }}"
+          exit 1
