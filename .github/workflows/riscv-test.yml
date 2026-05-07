@@ -48,22 +48,8 @@ jobs:
             python3-tomli libmpc-dev libmpfr-dev libgmp-dev gawk \
             build-essential bison flex texinfo gperf libtool patchutils bc \
             zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev \
-            libslirp-dev libncurses-dev dejagnu expect ccache \
+            libslirp-dev libncurses-dev dejagnu expect \
             python3-pyelftools
-
-      - name: Configure ccache
-        run: |
-          ccache --max-size=5G
-          ccache --set-config=compression=true
-          echo "PATH=/usr/lib/ccache:$PATH" >> "$GITHUB_ENV"
-
-      - name: Cache ccache directory
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ccache
-          key: ccache-riscv-${{ runner.os }}-${{ github.sha }}
-          restore-keys: |
-            ccache-riscv-${{ runner.os }}-
 
       - name: Checkout riscv-gnu-toolchain
         uses: actions/checkout@v4
@@ -99,10 +85,6 @@ jobs:
         run: |
           make -j"$(nproc)" newlib
           echo "$RISCV/bin" >> "$GITHUB_PATH"
-
-      - name: ccache stats
-        if: always()
-        run: ccache -s || true
 
       - name: Run GCC testsuite (newlib)
         working-directory: riscv-gnu-toolchain
