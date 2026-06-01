@@ -1,7 +1,6 @@
 name: ARC GCC test
 
 on:
-  pull_request:
   push:
   workflow_dispatch:
 
@@ -10,12 +9,12 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: arc-test-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  group: arc-test-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build-and-test:
-    name: ${{ matrix.target }}
+    name: ${{ matrix.target }}-${{ matrix.cpu }}
     runs-on: ubuntu-latest
     timeout-minutes: 350
 
@@ -24,11 +23,12 @@ jobs:
       matrix:
         include:
           - target: arc
-          - target: arc64
+            cpu: hs38_linux
 
     env:
       INSTALL_PREFIX: ${{ github.workspace }}/install
       TARGET: ${{ matrix.target }}
+      CPU: ${{ matrix.cpu }}
 
     steps:
       - name: Checkout GCC
@@ -51,7 +51,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: foss-for-synopsys-dwc-arc-processors/arc-gnu-toolchain
-          ref: arc-dev
           path: arc-gnu-toolchain
           fetch-depth: 1
 
@@ -67,6 +66,7 @@ jobs:
             --target="$TARGET" \
             --prefix="$INSTALL_PREFIX" \
             --with-gcc-src="$GITHUB_WORKSPACE/gcc" \
+            --with-cpu="$CPU" \
             --disable-linux \
             --disable-multilib \
             --with-sim=qemu
@@ -91,13 +91,7 @@ jobs:
           mkdir -p test-results
           # Locate gcc/g++ .sum files anywhere under the toolchain build tree.
           find arc-gnu-toolchain -name '*.sum' \
-            \( -path '*/gcc/testsuite/*' -o -path '*/build*/gcc/*' \) \
             -exec cp -v {} test-results/ \; || true
-          # Fallback: any .sum file produced by the build.
-          if ! ls test-results/*.sum >/dev/null 2>&1; then
-            find arc-gnu-toolchain -name '*.sum' \
-              -exec cp -v {} test-results/ \; || true
-          fi
 
           summary=test-results/summary.txt
           : > "$summary"
@@ -119,14 +113,20 @@ jobs:
           done
 
           fail_count=$(wc -l < "$fails" | tr -d ' ')
+          sum_count=$(ls -1 test-results/*.sum 2>/dev/null | wc -l | tr -d ' ')
           echo "fail_count=$fail_count" >> "$GITHUB_OUTPUT"
+          echo "sum_count=$sum_count" >> "$GITHUB_OUTPUT"
           echo "Unexpected results: $fail_count"
+          if [ "$sum_count" = "0" ]; then
+            echo "::error::No .sum files produced; treating as build failure."
+            exit 1
+          fi
 
       - name: Compare against baseline
         id: compare
         run: |
           set -e
-          baseline="gcc/.github/arc-baseline/unexpected-${TARGET}.txt"
+          baseline="gcc/.github/arc-baseline/unexpected-${TARGET}-${CPU}.txt"
           current="test-results/unexpected.txt"
           regressions="test-results/regressions.txt"
           fixed="test-results/fixed.txt"
@@ -159,12 +159,12 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: arc-gcc-testsuite-results-${{ env.TARGET }}
+          name: arc-gcc-testsuite-results-${{ env.TARGET }}-${{ env.CPU }}
           path: test-results/
           if-no-files-found: warn
 
       - name: Post test summary to PR
-        if: github.event_name == 'pull_request' && always()
+        if: always()
         uses: actions/github-script@v7
         env:
           FAIL_COUNT: ${{ steps.collect.outputs.fail_count }}
@@ -180,32 +180,37 @@ jobs:
             const fixedCount = parseInt(process.env.FIXED_COUNT || '0', 10);
             const hasBaseline = process.env.HAS_BASELINE === 'true';
             const target = '${{ env.TARGET }}';
+            const cpu = '${{ env.CPU }}';
+            const label = `${target}/${cpu}`;
 
             const readOrEmpty = (p) => {
               try { return fs.readFileSync(p, 'utf8'); } catch (e) { return ''; }
             };
             const truncate = (s, max) =>
               s.length > max
-                ? s.slice(0, max) + '\n... (truncated, full list in artifact)'
+                ? s.slice(0, max) + '\n... (truncated)'
                 : s;
 
-            const summary = readOrEmpty('test-results/summary.txt') ||
-              '(no summary produced; build may have failed)';
+            const summary = readOrEmpty('test-results/summary.txt');
             const regressions = readOrEmpty('test-results/regressions.txt');
             const fixed = readOrEmpty('test-results/fixed.txt');
             const allUnexpected = readOrEmpty('test-results/unexpected.txt');
+            const buildFailed = !summary.trim();
 
-            const marker = `<!-- arc-gcc-test-report:${target} -->`;
+            const marker = `<!-- arc-gcc-test-report:${target}-${cpu} -->`;
             let header;
-            if (!hasBaseline) {
-              header = `ℹ️ ARC GCC test (\`${target}\`): ` +
+            if (buildFailed) {
+              header = `💥 ARC GCC test (\`${label}\`): ` +
+                `build failed (no test results produced).`;
+            } else if (!hasBaseline) {
+              header = `ℹ️ ARC GCC test (\`${label}\`): ` +
                 `${failCount} unexpected result(s); no baseline available.`;
             } else if (regressionCount === 0) {
-              header = `✅ ARC GCC test (\`${target}\`): ` +
+              header = `✅ ARC GCC test (\`${label}\`): ` +
                 `no regressions vs baseline ` +
                 `(${failCount} unexpected results, ${fixedCount} fixed).`;
             } else {
-              header = `❌ ARC GCC test (\`${target}\`): ` +
+              header = `❌ ARC GCC test (\`${label}\`): ` +
                 `${regressionCount} new regression(s) vs baseline ` +
                 `(${failCount} total unexpected, ${fixedCount} fixed).`;
             }
@@ -227,40 +232,47 @@ jobs:
               marker,
               `## ${header}`,
               '',
-              section('Test summary (.sum totals)', summary),
+              buildFailed ? '' : section('Test summary (.sum totals)', summary),
               regressionCount > 0
                 ? section(`New regressions (${regressionCount})`, regressions)
                 : '',
               fixedCount > 0
                 ? section(`Fixed since baseline (${fixedCount})`, fixed)
                 : '',
-              !hasBaseline
+              !buildFailed && !hasBaseline
                 ? section(`All unexpected results (${failCount})`, allUnexpected)
                 : '',
-              `Full \`.sum\` files are attached as the workflow artifact ` +
-              `\`arc-gcc-testsuite-results-${target}\`. ` +
-              `Baseline lives in \`.github/arc-baseline/\`.`,
             ].filter(Boolean).join('\n');
 
             const { owner, repo } = context.repo;
-            const issue_number = context.payload.pull_request.number;
 
-            const comments = await github.paginate(
-              github.rest.issues.listComments,
-              { owner, repo, issue_number, per_page: 100 }
-            );
-            const existing = comments.find(c =>
-              c.user && c.user.type === 'Bot' && c.body && c.body.includes(marker)
-            );
+            const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner, repo, commit_sha: context.sha,
+            });
+            const openPrs = prs.data.filter(pr => pr.state === 'open');
+            if (openPrs.length === 0) {
+              core.info('No open PR associated with this commit; skipping comment.');
+              return;
+            }
 
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner, repo, comment_id: existing.id, body
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner, repo, issue_number, body
-              });
+            for (const pr of openPrs) {
+              const issue_number = pr.number;
+              const comments = await github.paginate(
+                github.rest.issues.listComments,
+                { owner, repo, issue_number, per_page: 100 }
+              );
+              const existing = comments.find(c =>
+                c.user && c.user.type === 'Bot' && c.body && c.body.includes(marker)
+              );
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner, repo, comment_id: existing.id, body
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number, body
+                });
+              }
             }
 
       - name: Fail job on regressions
