@@ -69,6 +69,7 @@ jobs:
             --with-cpu="$CPU" \
             --disable-linux \
             --disable-multilib \
+            --disable-werror \
             --with-sim=qemu
 
       - name: Build toolchain
