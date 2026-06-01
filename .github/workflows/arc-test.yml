@@ -1,4 +1,4 @@
-name: RISC-V GCC test
+name: ARC GCC test
 
 on:
   pull_request:
@@ -10,12 +10,12 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: riscv-test-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  group: arc-test-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
   build-and-test:
-    name: ${{ matrix.arch }}/${{ matrix.abi }}
+    name: ${{ matrix.target }}
     runs-on: ubuntu-latest
     timeout-minutes: 350
 
@@ -23,15 +23,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - arch: rv64gc
-            abi: lp64d
-          - arch: rv32gc
-            abi: ilp32d
+          - target: arc
+          - target: arc64
 
     env:
-      RISCV: ${{ github.workspace }}/install
-      TARGET_ARCH: ${{ matrix.arch }}
-      TARGET_ABI: ${{ matrix.abi }}
+      INSTALL_PREFIX: ${{ github.workspace }}/install
+      TARGET: ${{ matrix.target }}
 
     steps:
       - name: Checkout GCC
@@ -44,64 +41,64 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            autoconf automake autotools-dev curl python3 python3-pip \
-            python3-tomli libmpc-dev libmpfr-dev libgmp-dev gawk \
-            build-essential bison flex texinfo gperf libtool patchutils bc \
-            zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev \
-            libslirp-dev libncurses-dev dejagnu expect \
-            python3-pyelftools
+            autoconf automake autotools-dev curl libmpc-dev libmpfr-dev \
+            libgmp-dev libexpat1-dev gawk build-essential libncurses-dev \
+            bison flex texinfo gperf libtool patchutils bc zlib1g-dev \
+            git python3 dejagnu expect ninja-build pkg-config \
+            libglib2.0-dev libpixman-1-dev
 
-      - name: Checkout riscv-gnu-toolchain
+      - name: Checkout arc-gnu-toolchain
         uses: actions/checkout@v4
         with:
-          repository: riscv-collab/riscv-gnu-toolchain
-          path: riscv-gnu-toolchain
+          repository: foss-for-synopsys-dwc-arc-processors/arc-gnu-toolchain
+          ref: arc-dev
+          path: arc-gnu-toolchain
           fetch-depth: 1
 
-      - name: Initialize required submodules
-        working-directory: riscv-gnu-toolchain
+      - name: Configure arc-gnu-toolchain
+        working-directory: arc-gnu-toolchain
         run: |
-          # Only fetch submodules required for a newlib (--disable-linux) build:
-          # binutils, newlib, dejagnu. GCC sources come from the PR checkout
-          # via --with-gcc-src, so we don't initialize the gcc submodule.
-          git submodule update --init --depth 1 --recursive binutils
-          git submodule update --init --depth 1 --recursive newlib
-          git submodule update --init --depth 1 --recursive dejagnu
-
-      - name: Configure riscv-gnu-toolchain
-        working-directory: riscv-gnu-toolchain
-        run: |
+          # The arc-gnu-toolchain repo conditionally clones binutils-gdb,
+          # newlib, qemu, etc. when they don't already exist as sibling
+          # directories. We let it clone what it needs and only override
+          # the GCC source with --with-gcc-src to point at the PR checkout.
+          autoconf
           ./configure \
-            --prefix="$RISCV" \
-            --with-arch="$TARGET_ARCH" \
-            --with-abi="$TARGET_ABI" \
+            --target="$TARGET" \
+            --prefix="$INSTALL_PREFIX" \
             --with-gcc-src="$GITHUB_WORKSPACE/gcc" \
             --disable-linux \
-            --disable-gdb \
-            --disable-multilib
+            --disable-multilib \
+            --with-sim=qemu
 
-      - name: Build newlib toolchain
-        working-directory: riscv-gnu-toolchain
+      - name: Build toolchain
+        working-directory: arc-gnu-toolchain
         run: |
-          make -j"$(nproc)" newlib
-          echo "$RISCV/bin" >> "$GITHUB_PATH"
+          make -j"$(nproc)"
+          make install
+          echo "$INSTALL_PREFIX/bin" >> "$GITHUB_PATH"
 
-      - name: Run GCC testsuite (newlib)
-        working-directory: riscv-gnu-toolchain
+      - name: Run GCC testsuite
+        working-directory: arc-gnu-toolchain
         run: |
           # Don't fail the job on individual testsuite FAILs; we report them.
-          make -j"$(nproc)" check-gcc-newlib || true
+          make -j"$(nproc)" check-gcc-baremetal || true
 
       - name: Collect test results
         id: collect
         run: |
           set -e
           mkdir -p test-results
-          # Locate gcc/g++ .sum files produced by the build.
-          find riscv-gnu-toolchain/build-gcc-newlib-stage2 -name '*.sum' \
+          # Locate gcc/g++ .sum files anywhere under the toolchain build tree.
+          find arc-gnu-toolchain -name '*.sum' \
+            \( -path '*/gcc/testsuite/*' -o -path '*/build*/gcc/*' \) \
             -exec cp -v {} test-results/ \; || true
+          # Fallback: any .sum file produced by the build.
+          if ! ls test-results/*.sum >/dev/null 2>&1; then
+            find arc-gnu-toolchain -name '*.sum' \
+              -exec cp -v {} test-results/ \; || true
+          fi
 
-          # Aggregate pass/fail counters from the .sum files.
           summary=test-results/summary.txt
           : > "$summary"
           for f in test-results/*.sum; do
@@ -111,7 +108,6 @@ jobs:
             echo "" >> "$summary"
           done
 
-          # Extract unexpected failures (FAIL, XPASS, UNRESOLVED, ERROR).
           fails=test-results/unexpected.txt
           : > "$fails"
           for f in test-results/*.sum; do
@@ -130,7 +126,7 @@ jobs:
         id: compare
         run: |
           set -e
-          baseline="gcc/.github/riscv-baseline/unexpected-${TARGET_ARCH}-${TARGET_ABI}.txt"
+          baseline="gcc/.github/arc-baseline/unexpected-${TARGET}.txt"
           current="test-results/unexpected.txt"
           regressions="test-results/regressions.txt"
           fixed="test-results/fixed.txt"
@@ -145,15 +141,9 @@ jobs:
             exit 0
           fi
 
-          # Use sorted line-based set diffs. Both files share the same
-          # "<sumfile>: <STATUS>: <testname>" format produced by the
-          # collect step, so plain comm works after sorting.
           sort -u "$baseline" > /tmp/baseline.sorted
           sort -u "$current" > /tmp/current.sorted
-
-          # Regressions: in current but not in baseline.
           comm -23 /tmp/current.sorted /tmp/baseline.sorted > "$regressions"
-          # Fixed: in baseline but not in current.
           comm -13 /tmp/current.sorted /tmp/baseline.sorted > "$fixed"
 
           regression_count=$(wc -l < "$regressions" | tr -d ' ')
@@ -169,7 +159,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: gcc-testsuite-results-${{ env.TARGET_ARCH }}-${{ env.TARGET_ABI }}
+          name: arc-gcc-testsuite-results-${{ env.TARGET }}
           path: test-results/
           if-no-files-found: warn
 
@@ -189,8 +179,7 @@ jobs:
               parseInt(process.env.REGRESSION_COUNT || '0', 10);
             const fixedCount = parseInt(process.env.FIXED_COUNT || '0', 10);
             const hasBaseline = process.env.HAS_BASELINE === 'true';
-            const arch = '${{ env.TARGET_ARCH }}';
-            const abi = '${{ env.TARGET_ABI }}';
+            const target = '${{ env.TARGET }}';
 
             const readOrEmpty = (p) => {
               try { return fs.readFileSync(p, 'utf8'); } catch (e) { return ''; }
@@ -206,18 +195,17 @@ jobs:
             const fixed = readOrEmpty('test-results/fixed.txt');
             const allUnexpected = readOrEmpty('test-results/unexpected.txt');
 
-            // Per-matrix-config marker so each arch/abi gets its own sticky comment.
-            const marker = `<!-- riscv-gcc-test-report:${arch}-${abi} -->`;
+            const marker = `<!-- arc-gcc-test-report:${target} -->`;
             let header;
             if (!hasBaseline) {
-              header = `ℹ️ RISC-V GCC test (\`${arch}/${abi}\`): ` +
+              header = `ℹ️ ARC GCC test (\`${target}\`): ` +
                 `${failCount} unexpected result(s); no baseline available.`;
             } else if (regressionCount === 0) {
-              header = `✅ RISC-V GCC test (\`${arch}/${abi}\`): ` +
+              header = `✅ ARC GCC test (\`${target}\`): ` +
                 `no regressions vs baseline ` +
                 `(${failCount} unexpected results, ${fixedCount} fixed).`;
             } else {
-              header = `❌ RISC-V GCC test (\`${arch}/${abi}\`): ` +
+              header = `❌ ARC GCC test (\`${target}\`): ` +
                 `${regressionCount} new regression(s) vs baseline ` +
                 `(${failCount} total unexpected, ${fixedCount} fixed).`;
             }
@@ -250,8 +238,8 @@ jobs:
                 ? section(`All unexpected results (${failCount})`, allUnexpected)
                 : '',
               `Full \`.sum\` files are attached as the workflow artifact ` +
-              `\`gcc-testsuite-results-${arch}-${abi}\`. ` +
-              `Baseline lives in \`.github/riscv-baseline/\`.`,
+              `\`arc-gcc-testsuite-results-${target}\`. ` +
+              `Baseline lives in \`.github/arc-baseline/\`.`,
             ].filter(Boolean).join('\n');
 
             const { owner, repo } = context.repo;
