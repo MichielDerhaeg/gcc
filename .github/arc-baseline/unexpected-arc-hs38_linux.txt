@@ -1,0 +1,283 @@
+g++.sum: FAIL: tmpdir-g++.dg-struct-layout-1/t001 cp_compat_x_tst.o-cp_compat_y_tst.o link
+g++.sum: FAIL: tmpdir-g++.dg-struct-layout-1/t002 cp_compat_x_tst.o-cp_compat_y_tst.o link
+g++.sum: FAIL: tmpdir-g++.dg-struct-layout-1/t032 cp_compat_x_tst.o-cp_compat_y_tst.o link
+g++.sum: FAIL: tmpdir-g++.dg-struct-layout-1/t033 cp_compat_x_tst.o-cp_compat_y_tst.o link
+g++.sum: FAIL: g++.dg/debug/dwarf2/non-virtual-thunk.C  -std=gnu++20  scan-assembler thunk.C:30
+g++.sum: FAIL: g++.dg/debug/dwarf2/non-virtual-thunk.C  -std=gnu++26  scan-assembler thunk.C:30
+g++.sum: FAIL: g++.dg/debug/dwarf2/non-virtual-thunk.C  -std=gnu++98  scan-assembler thunk.C:30
+g++.sum: FAIL: c-c++-common/musttail19.c  -std=c++20  (test for warnings, line 17)
+g++.sum: FAIL: c-c++-common/musttail19.c  -std=c++20 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail19.c  -std=c++26  (test for warnings, line 17)
+g++.sum: FAIL: c-c++-common/musttail19.c  -std=c++26 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail19.c  -std=c++98  (test for warnings, line 17)
+g++.sum: FAIL: c-c++-common/musttail19.c  -std=c++98 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++11  (test for warnings, line 20)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++11  (test for warnings, line 40)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++11  (test for warnings, line 45)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++11  (test for warnings, line 78)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++11  (test for warnings, line 83)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++11 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++20  (test for warnings, line 20)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++20  (test for warnings, line 40)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++20  (test for warnings, line 45)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++20  (test for warnings, line 78)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++20  (test for warnings, line 83)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++20 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++26  (test for warnings, line 20)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++26  (test for warnings, line 40)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++26  (test for warnings, line 45)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++26  (test for warnings, line 78)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++26  (test for warnings, line 83)
+g++.sum: FAIL: c-c++-common/musttail28.c  -std=c++26 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++11  (test for warnings, line 21)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++11  (test for warnings, line 36)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++11  (test for warnings, line 41)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++11  (test for warnings, line 46)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++11  (test for warnings, line 52)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++11  (test for warnings, line 74)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++11  (test for warnings, line 79)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++11  (test for warnings, line 84)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++11  (test for warnings, line 90)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++11 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++20  (test for warnings, line 21)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++20  (test for warnings, line 36)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++20  (test for warnings, line 41)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++20  (test for warnings, line 46)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++20  (test for warnings, line 52)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++20  (test for warnings, line 74)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++20  (test for warnings, line 79)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++20  (test for warnings, line 84)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++20  (test for warnings, line 90)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++20 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++26  (test for warnings, line 21)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++26  (test for warnings, line 36)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++26  (test for warnings, line 41)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++26  (test for warnings, line 46)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++26  (test for warnings, line 52)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++26  (test for warnings, line 74)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++26  (test for warnings, line 79)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++26  (test for warnings, line 84)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++26  (test for warnings, line 90)
+g++.sum: FAIL: c-c++-common/musttail30.c  -std=gnu++26 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail8.c  -std=c++11  (test for warnings, line 17)
+g++.sum: FAIL: c-c++-common/musttail8.c  -std=c++11 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail8.c  -std=c++20  (test for warnings, line 17)
+g++.sum: FAIL: c-c++-common/musttail8.c  -std=c++20 (test for excess errors)
+g++.sum: FAIL: c-c++-common/musttail8.c  -std=c++26  (test for warnings, line 17)
+g++.sum: FAIL: c-c++-common/musttail8.c  -std=c++26 (test for excess errors)
+g++.sum: FAIL: g++.dg/cpp26/stdarg5.C  -std=c++26 execution test
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++11  (test for warnings, line 17)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++11  (test for warnings, line 23)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++11  (test for warnings, line 31)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++11 (test for excess errors)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++20  (test for warnings, line 17)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++20  (test for warnings, line 23)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++20  (test for warnings, line 31)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++20 (test for excess errors)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++26  (test for warnings, line 17)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++26  (test for warnings, line 23)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++26  (test for warnings, line 31)
+g++.sum: FAIL: g++.dg/ext/musttail1.C  -std=gnu++26 (test for excess errors)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++11  (test for warnings, line 17)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++11  (test for warnings, line 23)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++11  (test for warnings, line 31)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++11 (test for excess errors)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++20  (test for warnings, line 17)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++20  (test for warnings, line 23)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++20  (test for warnings, line 31)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++20 (test for excess errors)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++26  (test for warnings, line 17)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++26  (test for warnings, line 23)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++26  (test for warnings, line 31)
+g++.sum: FAIL: g++.dg/ext/musttail2.C  -std=gnu++26 (test for excess errors)
+g++.sum: FAIL: g++.dg/ext/musttail3.C  -std=c++11  (test for warnings, line 16)
+g++.sum: FAIL: g++.dg/ext/musttail3.C  -std=c++11  (test for warnings, line 30)
+g++.sum: FAIL: g++.dg/ext/musttail3.C  -std=c++11 (test for excess errors)
+g++.sum: FAIL: g++.dg/ext/musttail3.C  -std=c++20  (test for warnings, line 16)
+g++.sum: FAIL: g++.dg/ext/musttail3.C  -std=c++20  (test for warnings, line 30)
+g++.sum: FAIL: g++.dg/ext/musttail3.C  -std=c++20 (test for excess errors)
+g++.sum: FAIL: g++.dg/ext/musttail3.C  -std=c++26  (test for warnings, line 16)
+g++.sum: FAIL: g++.dg/ext/musttail3.C  -std=c++26  (test for warnings, line 30)
+g++.sum: FAIL: g++.dg/ext/musttail3.C  -std=c++26 (test for excess errors)
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++20  gcov: 1 failures in line counts, 0 in branch percentages, 0 in condition/decision, 0 in prime-paths, 0 in return percentages, 0 in intermediate format, 0 failed in filters
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++20  line 23: is #####:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  gcov: 12 failures in line counts, 0 in branch percentages, 0 in condition/decision, 0 in prime-paths, 0 in return percentages, 0 in intermediate format, 0 failed in filters
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 14: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 21: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 23: is #####:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 37: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 43: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 48: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 53: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 58: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 63: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 68: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 73: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++26  line 78: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  gcov: 12 failures in line counts, 0 in branch percentages, 0 in condition/decision, 0 in prime-paths, 0 in return percentages, 0 in intermediate format, 0 failed in filters
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 14: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 21: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 23: is #####:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 37: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 43: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 48: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 53: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 58: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 63: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 68: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 73: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855-priority.C  -std=gnu++98  line 78: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++20  gcov: 1 failures in line counts, 0 in branch percentages, 0 in condition/decision, 0 in prime-paths, 0 in return percentages, 0 in intermediate format, 0 failed in filters
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++20  line 25: is #####:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++26  gcov: 6 failures in line counts, 0 in branch percentages, 0 in condition/decision, 0 in prime-paths, 0 in return percentages, 0 in intermediate format, 0 failed in filters
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++26  line 16: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++26  line 23: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++26  line 25: is #####:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++26  line 39: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++26  line 45: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++26  line 50: is 3:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++98  gcov: 6 failures in line counts, 0 in branch percentages, 0 in condition/decision, 0 in prime-paths, 0 in return percentages, 0 in intermediate format, 0 failed in filters
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++98  line 16: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++98  line 23: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++98  line 25: is #####:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++98  line 39: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++98  line 45: is 2:should be 1
+g++.sum: FAIL: g++.dg/gcov/pr16855.C  -std=gnu++98  line 50: is 2:should be 1
+g++.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-12.c   -O2  execution test
+g++.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-12.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  execution test
+g++.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-12.c   -O2 -flto -fuse-linker-plugin -fno-fat-lto-objects  execution test
+g++.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-13.c   -O2  execution test
+g++.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-13.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  execution test
+g++.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-13.c   -O2 -flto -fuse-linker-plugin -fno-fat-lto-objects  execution test
+g++.sum: FAIL: c-c++-common/torture/vector-compare-1.c   -O0  execution test
+g++.sum: FAIL: g++.dg/torture/musttail1.C   -O0   scan-tree-dump-times optimized "  [^\n\r]* = foo \\([^\n\r]*\\); \\[tail call\\] \\[must tail call\\]" 1
+g++.sum: FAIL: g++.dg/torture/musttail1.C   -O0  (test for excess errors)
+gcc.sum: FAIL: gcc.c-torture/execute/pr64006.c   -O1  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr64006.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr64006.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr68381.c   -O0  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr68381.c   -O1  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr68381.c   -O2  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr68381.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr68381.c   -O2 -flto -fuse-linker-plugin -fno-fat-lto-objects  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr68381.c   -O3 -g  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr68381.c   -Os  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr98727.c   -O2  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr98727.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr98727.c   -O2 -flto -fuse-linker-plugin -fno-fat-lto-objects  execution test
+gcc.sum: FAIL: gcc.c-torture/execute/pr98727.c   -O3 -g  execution test
+gcc.sum: FAIL: gcc.dg/analyzer/mkostemp-1.c  (test for warnings, line 108)
+gcc.sum: FAIL: gcc.dg/analyzer/mkostemp-1.c  (test for warnings, line 114)
+gcc.sum: FAIL: gcc.dg/analyzer/mkostemps-1.c  (test for warnings, line 114)
+gcc.sum: FAIL: gcc.dg/analyzer/mkostemps-1.c  (test for warnings, line 120)
+gcc.sum: FAIL: gcc.dg/compat/struct-by-value-2 c_compat_x_tst.o-c_compat_y_tst.o link
+gcc.sum: FAIL: gcc.dg/compat/struct-by-value-3 c_compat_x_tst.o-c_compat_y_tst.o link
+gcc.sum: FAIL: gcc.dg/compat/struct-by-value-4 c_compat_x_tst.o-c_compat_y_tst.o link
+gcc.sum: FAIL: gcc.dg/compat/struct-return-2 c_compat_x_tst.o-c_compat_y_tst.o link
+gcc.sum: FAIL: gcc.dg/compat/struct-return-3 c_compat_x_tst.o-c_compat_y_tst.o link
+gcc.sum: FAIL: tmpdir-gcc.dg-struct-layout-1/t001 c_compat_x_tst.o-c_compat_y_tst.o link
+gcc.sum: FAIL: tmpdir-gcc.dg-struct-layout-1/t002 c_compat_x_tst.o-c_compat_y_tst.o link
+gcc.sum: FAIL: gcc.dg/debug/btf/btf-datasec-1.c scan-assembler-times 0[\t ]+[^\n]*bts_offset 7
+gcc.sum: FAIL: gcc.dg/debug/btf/btf-datasec-1.c scan-assembler-times 0xf000003[\t ]+[^\n]*btt_info 2
+gcc.sum: FAIL: gcc.dg/debug/btf/btf-datasec-1.c scan-assembler-times ascii ".data.0"[\t ]+[^\n]*btf_aux_string 1
+gcc.sum: FAIL: gcc.dg/c23-stdarg-9.c execution test
+gcc.sum: FAIL: gcc.dg/fold-round-1.c scan-assembler-not link_error
+gcc.sum: FAIL: gcc.dg/pr92301.c execution test
+gcc.sum: FAIL: gcc.dg/ssp-1.c (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/ssp-1.c compilation failed to produce executable
+gcc.sum: FAIL: gcc.dg/ssp-2.c (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/ssp-2.c compilation failed to produce executable
+gcc.sum: FAIL: gcc.dg/stackprotectexplicit1.c (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/stackprotectexplicit1.c compilation failed to produce executable
+gcc.sum: FAIL: gcc.dg/lto/toplevel-extended-asm-1 c_lto_toplevel-extended-asm-1_0.o-c_lto_toplevel-extended-asm-1_1.o link, -O2 -flto -flto-partition=1to1 -no-pie
+gcc.sum: FAIL: gcc.dg/lto/toplevel-extended-asm-2 c_lto_toplevel-extended-asm-2_0.o-c_lto_toplevel-extended-asm-2_1.o link, -O2 -flto -flto-partition=1to1
+gcc.sum: FAIL: gcc.dg/lto/toplevel-extended-asm-2 c_lto_toplevel-extended-asm-2_0.o-c_lto_toplevel-extended-asm-2_1.o link, -O2 -flto -flto-partition=cache
+gcc.sum: FAIL: gcc.dg/lto/toplevel-extended-asm-2 c_lto_toplevel-extended-asm-2_0.o-c_lto_toplevel-extended-asm-2_1.o link, -O2 -flto -flto-partition=max
+gcc.sum: FAIL: gcc.dg/lto/toplevel-extended-asm-3 c_lto_toplevel-extended-asm-3_0.o-c_lto_toplevel-extended-asm-3_1.o link, -O2 -flto -flto-partition=1to1
+gcc.sum: FAIL: gcc.dg/lto/toplevel-simple-asm-2 c_lto_toplevel-simple-asm-2_0.o-c_lto_toplevel-simple-asm-2_1.o link, -O2 -flto -flto-toplevel-asm-heuristics -flto-partition=1to1
+gcc.sum: FAIL: gcc.dg/lto/toplevel-simple-asm-2 c_lto_toplevel-simple-asm-2_0.o-c_lto_toplevel-simple-asm-2_1.o link, -O2 -flto -flto-toplevel-asm-heuristics -flto-partition=cache
+gcc.sum: FAIL: gcc.dg/lto/toplevel-simple-asm-2 c_lto_toplevel-simple-asm-2_0.o-c_lto_toplevel-simple-asm-2_1.o link, -O2 -flto -flto-toplevel-asm-heuristics -flto-partition=max
+gcc.sum: FAIL: gcc.dg/plugin/crash-test-nested-ice.c -fplugin=./crash_test_plugin.so  (test .sarif output for UTF-8-encoded parseable JSON)
+gcc.sum: FAIL: gcc.dg/plugin/crash-test-nested-ice.c -fplugin=./crash_test_plugin.so  dg-regexp 13 not found: "during GIMPLE pass: crash_test"
+gcc.sum: XPASS: gcc.dg/plugin/crash-test-nested-ice.c -fplugin=./crash_test_plugin.so (internal compiler error)
+gcc.sum: FAIL: gcc.dg/plugin/crash-test-nested-ice.c -fplugin=./crash_test_plugin.so (test for excess errors)
+gcc.sum: FAIL: gcc.dg/plugin/crash-test-nested-write-through-null.c -fplugin=./crash_test_plugin.so  (test .sarif output for UTF-8-encoded parseable JSON)
+gcc.sum: FAIL: gcc.dg/plugin/crash-test-nested-write-through-null.c -fplugin=./crash_test_plugin.so  dg-regexp 13 not found: "during GIMPLE pass: crash_test"
+gcc.sum: XPASS: gcc.dg/plugin/crash-test-nested-write-through-null.c -fplugin=./crash_test_plugin.so (internal compiler error)
+gcc.sum: FAIL: gcc.dg/plugin/crash-test-nested-write-through-null.c -fplugin=./crash_test_plugin.so (test for excess errors)
+gcc.sum: XPASS: gcc.dg/plugin/infoleak-vfio_iommu_type1.c -fplugin=./analyzer_kernel_plugin.so  (test for bogus messages, line 42)
+gcc.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-12.c   -O2  execution test
+gcc.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-12.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  execution test
+gcc.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-12.c   -O2 -flto -fuse-linker-plugin -fno-fat-lto-objects  execution test
+gcc.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-13.c   -O2  execution test
+gcc.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-13.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  execution test
+gcc.sum: FAIL: c-c++-common/torture/builtin-arith-overflow-13.c   -O2 -flto -fuse-linker-plugin -fno-fat-lto-objects  execution test
+gcc.sum: FAIL: c-c++-common/torture/vector-compare-1.c   -O0  execution test
+gcc.sum: FAIL: gcc.dg/torture/pr105665.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions  (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/torture/pr105665.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions  compilation failed to produce executable
+gcc.sum: FAIL: gcc.dg/torture/pr105665.c   -O3 -g  (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/torture/pr105665.c   -O3 -g  compilation failed to produce executable
+gcc.sum: UNRESOLVED: gcc.dg/torture/pr23821.c   -Os   scan-tree-dump ivcanon "Added canonical iv"
+gcc.sum: FAIL: gcc.dg/torture/pr60115.c   -O0  (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/torture/pr60115.c   -O0  compilation failed to produce executable
+gcc.sum: FAIL: gcc.dg/torture/pr60115.c   -O2  (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/torture/pr60115.c   -O2  compilation failed to produce executable
+gcc.sum: FAIL: gcc.dg/torture/pr60115.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/torture/pr60115.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  compilation failed to produce executable
+gcc.sum: FAIL: gcc.dg/torture/pr60115.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions  (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/torture/pr60115.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions  compilation failed to produce executable
+gcc.sum: FAIL: gcc.dg/torture/pr60115.c   -O3 -g  (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/torture/pr60115.c   -O3 -g  compilation failed to produce executable
+gcc.sum: FAIL: gcc.dg/torture/pr60115.c   -Os  (test for excess errors)
+gcc.sum: UNRESOLVED: gcc.dg/torture/pr60115.c   -Os  compilation failed to produce executable
+gcc.sum: FAIL: gcc.dg/tree-prof/indir-call-prof-malloc.c compilation,  -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/indir-call-prof-malloc.c compilation,  -fprofile-use -D_PROFILE_USE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/indir-call-prof-malloc.c execution,    -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/indir-call-prof-malloc.c execution,    -fprofile-use -D_PROFILE_USE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/pr79587.c compilation,  -fprofile-use -D_PROFILE_USE
+gcc.sum: FAIL: gcc.dg/tree-prof/pr79587.c execution,    -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/pr79587.c execution,    -fprofile-use -D_PROFILE_USE
+gcc.sum: FAIL: gcc.dg/tree-prof/pr97461.c compilation,  -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/pr97461.c compilation,  -fprofile-use -D_PROFILE_USE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/pr97461.c execution,    -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/pr97461.c execution,    -fprofile-use -D_PROFILE_USE
+gcc.sum: FAIL: gcc.dg/tree-prof/stringop-1.c scan-ipa-dump profile "Transformation done: single value 4 stringop"
+gcc.sum: FAIL: gcc.dg/tree-prof/stringop-1.c scan-tree-dump optimized " = MEM.*&b"
+gcc.sum: FAIL: gcc.dg/tree-prof/stringop-1.c scan-tree-dump optimized "MEM.*&a\\] = "
+gcc.sum: FAIL: gcc.dg/tree-prof/time-profiler-2.c compilation,  -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/time-profiler-2.c compilation,  -fprofile-use -D_PROFILE_USE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/time-profiler-2.c execution,    -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/time-profiler-2.c execution,    -fprofile-use -D_PROFILE_USE
+gcc.sum: FAIL: gcc.dg/tree-prof/va-arg-pack-1.c compilation,  -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/va-arg-pack-1.c compilation,  -fprofile-use -D_PROFILE_USE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/va-arg-pack-1.c execution,    -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/va-arg-pack-1.c execution,    -fprofile-use -D_PROFILE_USE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/val-prof-8.c compilation,  -fprofile-use -D_PROFILE_USE
+gcc.sum: FAIL: gcc.dg/tree-prof/val-prof-8.c execution,    -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/val-prof-8.c execution,    -fprofile-use -D_PROFILE_USE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/val-prof-9.c compilation,  -fprofile-use -D_PROFILE_USE
+gcc.sum: FAIL: gcc.dg/tree-prof/val-prof-9.c execution,    -fprofile-generate -D_PROFILE_GENERATE
+gcc.sum: UNRESOLVED: gcc.dg/tree-prof/val-prof-9.c execution,    -fprofile-use -D_PROFILE_USE
+gcc.sum: FAIL: gcc.dg/tree-ssa/gen-vect-11c.c scan-tree-dump-times vect "vectorized 0 loops" 1
+gcc.sum: FAIL: gcc.dg/tree-ssa/gen-vect-2.c scan-tree-dump-times vect "Vectorizing an unaligned access" 0
+gcc.sum: FAIL: gcc.dg/tree-ssa/gen-vect-25.c scan-tree-dump-times vect "Vectorizing an unaligned access" 0
+gcc.sum: UNRESOLVED: gcc.dg/tree-ssa/ldist-37.c scan-tree-dump ldist "split to 0 loops and 1 library calls"
+gcc.sum: FAIL: gcc.dg/tree-ssa/pr122569-1.c scan-tree-dump forwprop1 "__builtin_ctz|\\.CTZ"
+gcc.sum: FAIL: gcc.dg/tree-ssa/pr122569-2.c scan-tree-dump forwprop1 "__builtin_clz|\\.CLZ"
+gcc.sum: FAIL: gcc.dg/tree-ssa/pr83403-1.c scan-tree-dump-times lim2 "Executing store motion of" 10
+gcc.sum: FAIL: gcc.dg/tree-ssa/pr83403-2.c scan-tree-dump-times lim2 "Executing store motion of" 10
+gcc.sum: UNRESOLVED: gcc.dg/tree-ssa/scev-17.c scan-tree-dump sccp "\\(unsigned int\\) m_.\\(D\\)"
+gcc.sum: FAIL: gcc.dg/tree-ssa/update-threading.c scan-tree-dump-times optimized "Invalid sum" 0
+gcc.sum: FAIL: gcc.dg/tree-ssa/vrp-loop-1.c scan-tree-dump-not optimized "foo "
+gcc.sum: FAIL: gcc.misc-tests/gcov-pr90574-1.c gcov: 1 failures in line counts, 0 in branch percentages, 0 in condition/decision, 0 in prime-paths, 0 in return percentages, 0 in intermediate format, 0 failed in filters
+gcc.sum: FAIL: gcc.misc-tests/gcov-pr90574-1.c line 9: is 1:should be #####
+gcc.sum: FAIL: gcc.misc-tests/gcov-pr90574-2.c gcov: 1 failures in line counts, 0 in branch percentages, 0 in condition/decision, 0 in prime-paths, 0 in return percentages, 0 in intermediate format, 0 failed in filters
+gcc.sum: FAIL: gcc.misc-tests/gcov-pr90574-2.c line 9: is 1:should be #####
+gcc.sum: FAIL: outputs-22 exe savetmp namedb-2: outputs.ld1_args
+gcc.sum: FAIL: outputs-23 exe savetmp named2-2: outputs.ld1_args
+gcc.sum: FAIL: outputs-24 exe savetmp named2-3: outputs.ld1_args
+gcc.sum: FAIL: outputs-25 exe savetmp named2-4: outputs.ld1_args
+gcc.sum: FAIL: outputs-294 lto sing unnamed-3: a.ld1_args
+gcc.sum: FAIL: outputs-294 lto sing unnamed-3: a.ld_args
+gcc.sum: UNRESOLVED: gcc.target/arc/code-density-flag.c scan-assembler sub_s\\s+r3,r1,r3
+gcc.sum: FAIL: gcc.target/arc/store-merge-1.c scan-assembler-times std\\s*0,\\[r 1

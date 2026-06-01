@@ -1,0 +1,14 @@
+=== g++.sum ===
+# of expected passes		220634
+# of unexpected failures	154
+# of expected failures		1494
+# of unsupported tests		2473
+
+=== gcc.sum ===
+# of expected passes		148003
+# of unexpected failures	93
+# of unexpected successes	3
+# of expected failures		944
+# of unresolved testcases	33
+# of unsupported tests		5406
+

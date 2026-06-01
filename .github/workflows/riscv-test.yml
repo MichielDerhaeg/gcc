@@ -209,14 +209,14 @@ jobs:
             const regressions = readOrEmpty('test-results/regressions.txt');
             const fixed = readOrEmpty('test-results/fixed.txt');
             const allUnexpected = readOrEmpty('test-results/unexpected.txt');
-            const buildFailed = !summary.trim();
+            if (!summary.trim()) {
+              core.info('No test summary available; not posting a PR comment.');
+              return;
+            }
 
             const marker = `<!-- riscv-gcc-test-report:${arch}-${abi} -->`;
             let header;
-            if (buildFailed) {
-              header = `💥 RISC-V GCC test (\`${arch}/${abi}\`): ` +
-                `build failed (no test results produced).`;
-            } else if (!hasBaseline) {
+            if (!hasBaseline) {
               header = `ℹ️ RISC-V GCC test (\`${arch}/${abi}\`): ` +
                 `${failCount} unexpected result(s); no baseline available.`;
             } else if (regressionCount === 0) {
@@ -246,14 +246,14 @@ jobs:
               marker,
               `## ${header}`,
               '',
-              buildFailed ? '' : section('Test summary (.sum totals)', summary),
+              section('Test summary (.sum totals)', summary),
               regressionCount > 0
                 ? section(`New regressions (${regressionCount})`, regressions)
                 : '',
               fixedCount > 0
                 ? section(`Fixed since baseline (${fixedCount})`, fixed)
                 : '',
-              !buildFailed && !hasBaseline
+              !hasBaseline
                 ? section(`All unexpected results (${failCount})`, allUnexpected)
                 : '',
             ].filter(Boolean).join('\n');
