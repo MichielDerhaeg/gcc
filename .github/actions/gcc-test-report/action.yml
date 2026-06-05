@@ -1,19 +1,34 @@
 name: GCC test report
 description: >
-  Collect GCC testsuite .sum results, compare them against a committed
-  baseline, upload them as an artifact, post a summary to any associated
-  PR, and fail the job on new regressions. Shared by the per-target
-  toolchain test workflows.
+  Collect GCC testsuite .sum results, filter them against a committed
+  allowlist of known-acceptable failures, upload them as an artifact, post a
+  summary to any associated PR, and fail the job on any non-allowlisted
+  result. Shared by the per-target toolchain test workflows.
 
 inputs:
   sum-search-path:
     description: Directory tree to search for gcc/g++ .sum files.
     required: true
-  baseline-file:
+  allowlist-dir:
     description: >
-      Path to the committed baseline of expected unexpected results.
-      May not exist, in which case comparison is skipped.
+      Base allowlist directory (contains a <tool>/ subdir of `STATUS: testpath`
+      logs). Consumed by .github/scripts/testsuite-filter.
     required: true
+  tool:
+    description: Allowlist subdirectory / toolset.
+    required: false
+    default: gcc
+  libc:
+    description: C library tag used to select allowlist files (e.g. newlib).
+    required: false
+    default: newlib
+  arch:
+    description: Target arch used to select allowlist files (e.g. rv32gc, arc-em).
+    required: true
+  abi:
+    description: Target ABI used to select allowlist files (e.g. ilp32d). May be empty.
+    required: false
+    default: ""
   artifact-name:
     description: Name of the uploaded test-results artifact.
     required: true
@@ -21,7 +36,7 @@ inputs:
     description: >
       Unique id embedded as an HTML comment in the PR comment so it can
       be found and updated on subsequent runs
-      (e.g. "arc-gcc-test-report:arc-hs38_linux").
+      (e.g. "arc-gcc-test-report:arc-em").
     required: true
   report-label:
     description: Human label for the target shown in the PR comment (e.g. "rv64gc/lp64d").
@@ -58,68 +73,56 @@ runs:
           echo "" >> "$summary"
         done
 
-        # Extract unexpected failures (FAIL, XPASS, UNRESOLVED, ERROR).
-        fails=test-results/unexpected.txt
-        : > "$fails"
-        for f in test-results/*.sum; do
-          [ -f "$f" ] || continue
-          awk -v file="$(basename "$f")" '
-            /^FAIL: / || /^XPASS: / || /^UNRESOLVED: / || /^ERROR: / {
-              print file ": " $0
-            }' "$f" >> "$fails"
-        done
-
-        fail_count=$(wc -l < "$fails" | tr -d ' ')
         sum_count=$(ls -1 test-results/*.sum 2>/dev/null | wc -l | tr -d ' ')
-        echo "fail_count=$fail_count" >> "$GITHUB_OUTPUT"
         echo "sum_count=$sum_count" >> "$GITHUB_OUTPUT"
-        echo "Unexpected results: $fail_count"
+        echo "Collected .sum files: $sum_count"
         if [ "$sum_count" = "0" ]; then
           echo "::error::No .sum files produced; treating as build failure."
           exit 1
         fi
 
-    - name: Compare against baseline
-      id: compare
+    - name: Filter against allowlist
+      id: filter
       shell: bash
       env:
-        BASELINE_FILE: ${{ inputs.baseline-file }}
+        ALLOWLIST_DIR: ${{ inputs.allowlist-dir }}
+        TOOL: ${{ inputs.tool }}
+        LIBC: ${{ inputs.libc }}
+        ARCH: ${{ inputs.arch }}
+        ABI: ${{ inputs.abi }}
+        FILTER: ${{ github.action_path }}/../../scripts/testsuite-filter
       run: |
         set -e
-        baseline="$BASELINE_FILE"
-        current="test-results/unexpected.txt"
         regressions="test-results/regressions.txt"
-        fixed="test-results/fixed.txt"
+        output="test-results/filter-output.txt"
 
-        if [ ! -f "$baseline" ]; then
-          echo "::warning::No baseline found at $baseline; skipping comparison."
-          : > "$regressions"
-          : > "$fixed"
-          echo "regression_count=0" >> "$GITHUB_OUTPUT"
-          echo "fixed_count=0" >> "$GITHUB_OUTPUT"
-          echo "has_baseline=false" >> "$GITHUB_OUTPUT"
-          exit 0
+        sums=$(ls -1 test-results/*.sum | paste -sd ',' -)
+
+        set +e
+        python3 "$FILTER" \
+          --tool "$TOOL" \
+          --libc "$LIBC" \
+          --arch "$ARCH" \
+          --abi "$ABI" \
+          --allowlist-dir "$ALLOWLIST_DIR" \
+          --out "$regressions" \
+          "$sums" | tee "$output"
+        rc=${PIPESTATUS[0]}
+        set -e
+
+        # rc: 0 = all allowlisted, 1 = surviving results, 2 = no .sum files.
+        if [ "$rc" = "2" ]; then
+          echo "::error::testsuite-filter found no .sum files."
+          exit 1
         fi
 
-        # Use sorted line-based set diffs. Both files share the same
-        # "<sumfile>: <STATUS>: <testname>" format produced by the
-        # collect step, so plain comm works after sorting.
-        sort -u "$baseline" > /tmp/baseline.sorted
-        sort -u "$current" > /tmp/current.sorted
-
-        # Regressions: in current but not in baseline.
-        comm -23 /tmp/current.sorted /tmp/baseline.sorted > "$regressions"
-        # Fixed: in baseline but not in current.
-        comm -13 /tmp/current.sorted /tmp/baseline.sorted > "$fixed"
-
         regression_count=$(wc -l < "$regressions" | tr -d ' ')
-        fixed_count=$(wc -l < "$fixed" | tr -d ' ')
-
-        echo "regression_count=$regression_count" >> "$GITHUB_OUTPUT"
-        echo "fixed_count=$fixed_count" >> "$GITHUB_OUTPUT"
-        echo "has_baseline=true" >> "$GITHUB_OUTPUT"
-        echo "Regressions vs baseline: $regression_count"
-        echo "Fixed vs baseline:       $fixed_count"
+        unexpected_count=$(sed -n 's/^Unexpected results:[[:space:]]*//p' "$output" | tr -d ' ')
+        allowlisted_count=$(sed -n 's/^Allowlisted (ignored):[[:space:]]*//p' "$output" | tr -d ' ')
+        echo "regression_count=${regression_count:-0}" >> "$GITHUB_OUTPUT"
+        echo "unexpected_count=${unexpected_count:-0}" >> "$GITHUB_OUTPUT"
+        echo "allowlisted_count=${allowlisted_count:-0}" >> "$GITHUB_OUTPUT"
+        echo "Non-allowlisted results: ${regression_count:-0}"
 
     - name: Upload test results
       if: always()
@@ -133,10 +136,9 @@ runs:
       if: always()
       uses: actions/github-script@v7
       env:
-        FAIL_COUNT: ${{ steps.collect.outputs.fail_count }}
-        REGRESSION_COUNT: ${{ steps.compare.outputs.regression_count }}
-        FIXED_COUNT: ${{ steps.compare.outputs.fixed_count }}
-        HAS_BASELINE: ${{ steps.compare.outputs.has_baseline }}
+        REGRESSION_COUNT: ${{ steps.filter.outputs.regression_count }}
+        UNEXPECTED_COUNT: ${{ steps.filter.outputs.unexpected_count }}
+        ALLOWLISTED_COUNT: ${{ steps.filter.outputs.allowlisted_count }}
         REPORT_MARKER: ${{ inputs.report-marker }}
         REPORT_LABEL: ${{ inputs.report-label }}
         REPORT_PREFIX: ${{ inputs.report-prefix }}
@@ -144,11 +146,12 @@ runs:
         github-token: ${{ inputs.github-token }}
         script: |
           const fs = require('fs');
-          const failCount = parseInt(process.env.FAIL_COUNT || '0', 10);
           const regressionCount =
             parseInt(process.env.REGRESSION_COUNT || '0', 10);
-          const fixedCount = parseInt(process.env.FIXED_COUNT || '0', 10);
-          const hasBaseline = process.env.HAS_BASELINE === 'true';
+          const unexpectedCount =
+            parseInt(process.env.UNEXPECTED_COUNT || '0', 10);
+          const allowlistedCount =
+            parseInt(process.env.ALLOWLISTED_COUNT || '0', 10);
           const label = process.env.REPORT_LABEL;
           const prefix = process.env.REPORT_PREFIX;
           const markerId = process.env.REPORT_MARKER;
@@ -157,14 +160,10 @@ runs:
             try { return fs.readFileSync(p, 'utf8'); } catch (e) { return ''; }
           };
           const truncate = (s, max) =>
-            s.length > max
-              ? s.slice(0, max) + '\n... (truncated)'
-              : s;
+            s.length > max ? s.slice(0, max) + '\n... (truncated)' : s;
 
           const summary = readOrEmpty('test-results/summary.txt');
           const regressions = readOrEmpty('test-results/regressions.txt');
-          const fixed = readOrEmpty('test-results/fixed.txt');
-          const allUnexpected = readOrEmpty('test-results/unexpected.txt');
           if (!summary.trim()) {
             core.info('No test summary available; not posting a PR comment.');
             return;
@@ -172,17 +171,14 @@ runs:
 
           const marker = `<!-- ${markerId} -->`;
           let header;
-          if (!hasBaseline) {
-            header = `ℹ️ ${prefix} (\`${label}\`): ` +
-              `${failCount} unexpected result(s); no baseline available.`;
-          } else if (regressionCount === 0) {
+          if (regressionCount === 0) {
             header = `✅ ${prefix} (\`${label}\`): ` +
-              `no regressions vs baseline ` +
-              `(${failCount} unexpected results, ${fixedCount} fixed).`;
+              `no non-allowlisted results ` +
+              `(${unexpectedCount} unexpected, ${allowlistedCount} allowlisted).`;
           } else {
             header = `❌ ${prefix} (\`${label}\`): ` +
-              `${regressionCount} new regression(s) vs baseline ` +
-              `(${failCount} total unexpected, ${fixedCount} fixed).`;
+              `${regressionCount} non-allowlisted result(s) ` +
+              `(${unexpectedCount} unexpected, ${allowlistedCount} allowlisted).`;
           }
 
           const section = (title, body) =>
@@ -204,13 +200,7 @@ runs:
             '',
             section('Test summary (.sum totals)', summary),
             regressionCount > 0
-              ? section(`New regressions (${regressionCount})`, regressions)
-              : '',
-            fixedCount > 0
-              ? section(`Fixed since baseline (${fixedCount})`, fixed)
-              : '',
-            !hasBaseline
-              ? section(`All unexpected results (${failCount})`, allUnexpected)
+              ? section(`Non-allowlisted results (${regressionCount})`, regressions)
               : '',
           ].filter(Boolean).join('\n');
 
@@ -246,11 +236,11 @@ runs:
             }
           }
 
-    - name: Fail job on regressions
-      if: steps.compare.outputs.regression_count != '0' && steps.compare.outputs.regression_count != ''
+    - name: Fail job on non-allowlisted results
+      if: steps.filter.outputs.regression_count != '0' && steps.filter.outputs.regression_count != ''
       shell: bash
       env:
-        REGRESSION_COUNT: ${{ steps.compare.outputs.regression_count }}
+        REGRESSION_COUNT: ${{ steps.filter.outputs.regression_count }}
       run: |
-        echo "New regressions vs baseline: $REGRESSION_COUNT"
+        echo "Non-allowlisted results: $REGRESSION_COUNT"
         exit 1

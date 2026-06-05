@@ -87,11 +87,13 @@ jobs:
           # Don't fail the job on individual testsuite FAILs; we report them.
           make -j"$(nproc)" check-gcc-baremetal || true
 
-      - name: Collect, compare and report results
+      - name: Collect, filter and report results
         uses: ./gcc/.github/actions/gcc-test-report
         with:
           sum-search-path: arc-gnu-toolchain
-          baseline-file: gcc/.github/arc-baseline/unexpected-${{ matrix.target }}-${{ matrix.cpu }}.txt
+          allowlist-dir: gcc/.github/allowlist
+          libc: newlib
+          arch: ${{ matrix.target }}-${{ matrix.cpu }}
           artifact-name: arc-gcc-testsuite-results-${{ matrix.target }}-${{ matrix.cpu }}
           report-marker: arc-gcc-test-report:${{ matrix.target }}-${{ matrix.cpu }}
           report-label: ${{ matrix.target }}/${{ matrix.cpu }}

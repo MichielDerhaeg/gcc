@@ -91,11 +91,14 @@ jobs:
           # Don't fail the job on individual testsuite FAILs; we report them.
           make -j"$(nproc)" check-gcc-newlib || true
 
-      - name: Collect, compare and report results
+      - name: Collect, filter and report results
         uses: ./gcc/.github/actions/gcc-test-report
         with:
           sum-search-path: riscv-gnu-toolchain/build-gcc-newlib-stage2
-          baseline-file: gcc/.github/riscv-baseline/unexpected-${{ matrix.arch }}-${{ matrix.abi }}.txt
+          allowlist-dir: gcc/.github/allowlist
+          libc: newlib
+          arch: ${{ matrix.arch }}
+          abi: ${{ matrix.abi }}
           artifact-name: gcc-testsuite-results-${{ matrix.arch }}-${{ matrix.abi }}
           report-marker: riscv-gcc-test-report:${{ matrix.arch }}-${{ matrix.abi }}
           report-label: ${{ matrix.arch }}/${{ matrix.abi }}
