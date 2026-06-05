@@ -555,10 +555,10 @@ g++.sum: FAIL: g++.dg/gcov/ternary.C  -std=gnu++98  gcov: 1 failures in line cou
 g++.sum: FAIL: g++.dg/gcov/ternary.C  -std=gnu++98  line 8: is #####:should be 1*
 g++.sum: FAIL: g++.target/riscv/rvv/base/pr122448.C (test for excess errors)
 g++.sum: UNRESOLVED: g++.target/riscv/rvv/base/pr122448.C compilation failed to produce executable
-g++.sum: FAIL: g++.target/riscv/rvv/base/pr123808-2.C (internal compiler error: in extract_insn, at recog.cc:2894)
+g++.sum: FAIL: g++.target/riscv/rvv/base/pr123808-2.C (internal compiler error: in extract_insn, at recog.cc:2892)
 g++.sum: FAIL: g++.target/riscv/rvv/base/pr123808-2.C (test for excess errors)
 g++.sum: UNRESOLVED: g++.target/riscv/rvv/base/pr123808-2.C compilation failed to produce executable
-g++.sum: FAIL: g++.target/riscv/rvv/base/pr123808.C (internal compiler error: in extract_insn, at recog.cc:2894)
+g++.sum: FAIL: g++.target/riscv/rvv/base/pr123808.C (internal compiler error: in extract_insn, at recog.cc:2892)
 g++.sum: FAIL: g++.target/riscv/rvv/base/pr123808.C (test for excess errors)
 g++.sum: UNRESOLVED: g++.target/riscv/rvv/base/pr123808.C compilation failed to produce executable
 gcc.sum: FAIL: gcc.c-torture/execute/fprintf-2.c   -O0  execution test
@@ -598,6 +598,8 @@ gcc.sum: UNRESOLVED: gcc.dg/ssp-2.c compilation failed to produce executable
 gcc.sum: FAIL: gcc.dg/stackprotectexplicit1.c (test for excess errors)
 gcc.sum: UNRESOLVED: gcc.dg/stackprotectexplicit1.c compilation failed to produce executable
 gcc.sum: FAIL: gcc.dg/ipa/pr122458.c (test for excess errors)
+gcc.sum: FAIL: gcc.dg/tree-ssa/pr122569-1.c scan-tree-dump forwprop1 "__builtin_ctz|\\.CTZ"
+gcc.sum: FAIL: gcc.dg/tree-ssa/pr122569-2.c scan-tree-dump forwprop1 "__builtin_clz|\\.CLZ"
 gcc.sum: FAIL: gcc.dg/vect/costmodel/riscv/rvv/dynamic-lmul2-2.c scan-assembler e8,m2
 gcc.sum: FAIL: gcc.dg/vect/costmodel/riscv/rvv/dynamic-lmul2-2.c scan-tree-dump-times vect "Preferring smaller LMUL loop because it has unexpected spills" 2
 gcc.sum: FAIL: gcc.dg/vect/costmodel/riscv/rvv/dynamic-lmul2-7.c scan-assembler e32,m2
@@ -2146,6 +2148,9 @@ gcc.sum: FAIL: gcc.target/riscv/rvv/autovec/vx_vf/vx-6-u64.c -ftree-vectorize -O
 gcc.sum: FAIL: gcc.target/riscv/rvv/pr120297.c (test for excess errors)
 gcc.sum: UNRESOLVED: gcc.target/riscv/rvv/pr120297.c compilation failed to produce executable
 gcc.sum: FAIL: gcc.target/riscv/rvv/pr122474.c (test for excess errors)
+gcc.sum: FAIL: gcc.target/riscv/rvv/vsetvl/avl_single-26.c   -O2   scan-assembler-times vsetvli 3
+gcc.sum: FAIL: gcc.target/riscv/rvv/vsetvl/avl_single-26.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none   scan-assembler-times vsetvli 3
+gcc.sum: FAIL: gcc.target/riscv/rvv/vsetvl/avl_single-26.c   -O2 -flto -fuse-linker-plugin -fno-fat-lto-objects   scan-assembler-times vsetvli 3
 gcc.sum: FAIL: gcc.target/riscv/rvv/vsetvl/pr117974.c   -O0   scan-assembler-times beq\\s+[a-x0-9]+,zero,.L12\\s+vsetvli 3
 gcc.sum: FAIL: gcc.target/riscv/rvv/vsetvl/pr117974.c   -O1   scan-assembler-times beq\\s+[a-x0-9]+,zero,.L12\\s+vsetvli 3
 gcc.sum: FAIL: gcc.target/riscv/rvv/vsetvl/pr117974.c   -O2   scan-assembler-times beq\\s+[a-x0-9]+,zero,.L12\\s+vsetvli 3
